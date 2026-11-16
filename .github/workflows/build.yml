@@ -1,0 +1,37 @@
+name: Compilação
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Compilar
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versões
+        run: |
+          sw_vers
+          swiftc --version
+
+      - name: Compilar o app
+        run: ./build.sh --no-install
+
+      - name: Conferir o pacote
+        run: |
+          test -x build/Ipasty.app/Contents/MacOS/Ipasty
+          test -f build/Ipasty.app/Contents/Resources/emoji-test.txt
+          test -f build/Ipasty.app/Contents/Resources/AppIcon.icns
+          plutil -lint build/Ipasty.app/Contents/Info.plist
+          codesign --verify --verbose build/Ipasty.app

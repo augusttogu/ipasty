@@ -1,0 +1,313 @@
+// Ipasty — área de transferência, emojis, GIFs e caracteres especiais na barra de menus do macOS.
+// Atalho padrão: ⇧⌘V abre o histórico. ↑/↓ navega, Enter cola, ⌘1–9 escolhe rápido,
+// ⌘P fixa/desafixa, ⌘⌫ apaga o item, Esc fecha.
+
+import AppKit
+import SwiftUI
+import Carbon
+import CryptoKit
+import ServiceManagement
+
+// MARK: - Modelo
+
+struct ClipItem: Codable, Identifiable, Equatable {
+    enum Kind: String, Codable { case text, image }
+    var id = UUID()
+    var kind: Kind
+    var text: String?
+    var imageFile: String?
+    var hash: String
+    var date: Date
+    var pinned: Bool = false
+    var sourceApp: String?
+}
+
+final class Store: ObservableObject {
+    @Published var items: [ClipItem] = []
+    @Published var query: String = "" { didSet { selected = 0 } }
+    @Published var selected: Int = 0
+    @Published var focusTick = 0
+    @Published var hoveredID: UUID?
+
+    let maxItems = 300
+    let dir: URL
+    let imagesDir: URL
+    private var thumbCache: [String: NSImage] = [:]
+
+    init() {
+        dir = AppPaths.dataDir
+        imagesDir = dir.appendingPathComponent("images", isDirectory: true)
+        try? FileManager.default.createDirectory(at: imagesDir, withIntermediateDirectories: true)
+        load()
+    }
+
+    var filtered: [ClipItem] {
+        let sorted = items.filter { $0.pinned } + items.filter { !$0.pinned }
+        let q = query.trimmingCharacters(in: .whitespaces)
+        guard !q.isEmpty else { return sorted }
+        return sorted.filter { item in
+            if let t = item.text { return t.localizedCaseInsensitiveContains(q) }
+            return "imagem".localizedCaseInsensitiveContains(q)
+        }
+    }
+
+    func add(_ new: ClipItem) {
+        if let idx = items.firstIndex(where: { $0.hash == new.hash }) {
+            var existing = items.remove(at: idx)
+            existing.date = Date()
+            existing.sourceApp = new.sourceApp ?? existing.sourceApp
+            items.insert(existing, at: 0)
+            if let f = new.imageFile, f != existing.imageFile { try? FileManager.default.removeItem(at: imagesDir.appendingPathComponent(f)) }
+        } else {
+            items.insert(new, at: 0)
+        }
+        trim()
+        save()
+    }
+
+    func moveToTop(_ id: UUID) {
+        guard let idx = items.firstIndex(where: { $0.id == id }) else { return }
+        var it = items.remove(at: idx)
+        it.date = Date()
+        items.insert(it, at: 0)
+        save()
+    }
+
+    func togglePin(_ id: UUID) {
+        guard let idx = items.firstIndex(where: { $0.id == id }) else { return }
+        items[idx].pinned.toggle()
+        save()
+    }
+
+    func delete(_ id: UUID) {
+        guard let idx = items.firstIndex(where: { $0.id == id }) else { return }
+        removeFiles(items[idx])
+        items.remove(at: idx)
+        selected = min(selected, max(0, filtered.count - 1))
+        save()
+    }
+
+    func clearUnpinned() {
+        items.filter { !$0.pinned }.forEach(removeFiles)
+        items.removeAll { !$0.pinned }
+        selected = 0
+        save()
+    }
+
+    func thumbnail(_ item: ClipItem) -> NSImage? {
+        guard let f = item.imageFile else { return nil }
+        if let c = thumbCache[f] { return c }
+        let img = NSImage(contentsOf: imagesDir.appendingPathComponent(f))
+        thumbCache[f] = img
+        return img
+    }
+
+    func imageData(_ item: ClipItem) -> Data? {
+        guard let f = item.imageFile else { return nil }
+        return try? Data(contentsOf: imagesDir.appendingPathComponent(f))
+    }
+
+    private func trim() {
+        var unpinned = 0
+        var keep: [ClipItem] = []
+        for it in items {
+            if it.pinned { keep.append(it); continue }
+            unpinned += 1
+            if unpinned <= maxItems { keep.append(it) } else { removeFiles(it) }
+        }
+        items = keep
+    }
+
+    private func removeFiles(_ it: ClipItem) {
+        if let f = it.imageFile {
+            try? FileManager.default.removeItem(at: imagesDir.appendingPathComponent(f))
+            thumbCache[f] = nil
+        }
+    }
+
+    private var historyURL: URL { dir.appendingPathComponent("history.json") }
+
+    private func load() {
+        guard let data = try? Data(contentsOf: historyURL),
+              let list = try? JSONDecoder().decode([ClipItem].self, from: data) else { return }
+        items = list
+    }
+
+    func save() {
+        if let data = try? JSONEncoder().encode(items) {
+            try? data.write(to: historyURL, options: .atomic)
+        }
+    }
+}
+
+// MARK: - Monitor da área de transferência
+
+final class ClipboardWatcher {
+    let store: Store
+    private var lastChange = NSPasteboard.general.changeCount
+    private var timer: Timer?
+
+    private let ignoredTypes: Set<String> = [
+        "org.nspasteboard.ConcealedType",   // senhas (1Password, Bitwarden, etc.)
+        "org.nspasteboard.TransientType",
+        "org.nspasteboard.AutoGeneratedType",
+        "com.agilebits.onepassword",
+    ]
+
+    init(store: Store) { self.store = store }
+
+    func start() {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: true) { [weak self] _ in self?.poll() }
+        RunLoop.main.add(timer!, forMode: .common)
+    }
+
+    /// Chamado depois que o próprio app escreve na área de transferência.
+    func markOwnWrite() { lastChange = NSPasteboard.general.changeCount }
+
+    private func poll() {
+        let pb = NSPasteboard.general
+        guard pb.changeCount != lastChange else { return }
+        lastChange = pb.changeCount
+
+        let types = pb.types ?? []
+        if types.contains(where: { ignoredTypes.contains($0.rawValue) }) { return }
+        let app = NSWorkspace.shared.frontmostApplication?.localizedName
+
+        if let s = pb.string(forType: .string), !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            let h = sha(Data(s.utf8))
+            store.add(ClipItem(kind: .text, text: s, hash: h, date: Date(), sourceApp: app))
+            return
+        }
+
+        if types.contains(.png) || types.contains(.tiff) {
+            var png = pb.data(forType: .png)
+            if png == nil, let tiff = pb.data(forType: .tiff), let rep = NSBitmapImageRep(data: tiff) {
+                png = rep.representation(using: .png, properties: [:])
+            }
+            guard let data = png else { return }
+            let h = sha(data)
+            let name = "\(h.prefix(24)).png"
+            try? data.write(to: store.imagesDir.appendingPathComponent(name))
+            store.add(ClipItem(kind: .image, imageFile: name, hash: h, date: Date(), sourceApp: app))
+        }
+    }
+
+    private func sha(_ d: Data) -> String {
+        SHA256.hash(data: d).map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+// MARK: - Interface
+
+struct VisualEffect: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let v = NSVisualEffectView()
+        v.material = .popover
+        v.blendingMode = .behindWindow
+        v.state = .active
+        return v
+    }
+    func updateNSView(_ v: NSVisualEffectView, context: Context) {}
+}
+
+struct CardView: View {
+    let item: ClipItem
+    let isSelected: Bool
+    let hovering: Bool
+    let thumb: NSImage?
+    var isFavorite: Bool = false
+    var onPick: () -> Void = {}
+    var onTogglePin: () -> Void = {}
+    var onDelete: () -> Void = {}
+    var onFavorite: (() -> Void)? = nil
+    var onHover: (Bool) -> Void = { _ in }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            VStack(alignment: .leading, spacing: 6) {
+                if item.kind == .image, let thumb {
+                    Image(nsImage: thumb)
+                        .resizable().aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: 220, maxHeight: 96, alignment: .leading)
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                } else {
+                    Text(preview)
+                        .font(.system(size: 13))
+                        .lineLimit(4)
+                        .truncationMode(.tail)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                HStack(spacing: 4) {
+                    if isFavorite { Image(systemName: "heart.fill").font(.system(size: 9)).foregroundStyle(.pink) }
+                    Text(caption)
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            VStack(spacing: 0) {
+                Menu {
+                    Button("Colar") { onPick() }
+                    Button(item.pinned ? "Desafixar" : "Fixar") { onTogglePin() }
+                    if let onFavorite {
+                        Button(isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos ♡") { onFavorite() }
+                    }
+                    Divider()
+                    Button("Apagar") { onDelete() }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(width: 26, height: 22)
+                        .contentShape(Rectangle())
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .fixedSize()
+                .help("Mais opções")
+
+                Spacer(minLength: 10)
+
+                Button(action: onTogglePin) {
+                    Image(systemName: item.pinned ? "pin.fill" : "pin")
+                        .font(.system(size: 12))
+                        .rotationEffect(.degrees(45))
+                        .foregroundStyle(item.pinned ? Color.orange : Color.secondary)
+                        .frame(width: 26, height: 22)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help(item.pinned ? "Desafixar (⌘P)" : "Fixar — não some ao limpar (⌘P)")
+            }
+        }
+        .padding(.leading, 12).padding(.trailing, 6).padding(.vertical, 10)
+        .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color(nsColor: .controlBackgroundColor).opacity(hovering ? 1 : 0.88))
+                .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .strokeBorder(isSelected ? Color.primary.opacity(0.85) : Color.primary.opacity(0.1),
+                              lineWidth: isSelected ? 2 : 1)
+        )
+        .contentShape(Rectangle())
+        .onHover { onHover($0) }
+    }
+
+    var preview: String {
+        (item.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var caption: String {
+        let f = RelativeDateTimeFormatter()
+        f.locale = Locale(identifier: "pt_BR")
+        f.unitsStyle = .short
+        let when = f.localizedString(for: item.date, relativeTo: Date())
+        if let app = item.sourceApp { return "\(app) · \(when)" }
+        return when
+    }
+}
+

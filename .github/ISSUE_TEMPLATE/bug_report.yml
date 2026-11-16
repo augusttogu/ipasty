@@ -1,0 +1,54 @@
+name: 🐛 Relatar um problema
+description: Algo não funciona como deveria.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar a melhorar o Ipasty! ⚠️ **Não cole conteúdo do seu histórico, chaves de API ou dados pessoais aqui.**
+  - type: textarea
+    id: what
+    attributes:
+      label: O que aconteceu?
+      description: Descreva o problema e o que você esperava que acontecesse.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Como reproduzir
+      placeholder: |
+        1. Abra o Ipasty com ⇧⌘V
+        2. Vá na aba…
+        3. Clique em…
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Versão do Ipasty
+      description: Clique com o botão direito no app, em Aplicativos → Obter Informações.
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: Versão do macOS e tipo de Mac
+      placeholder: "macOS 15.2, MacBook Air M2"
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: Como você instalou?
+      options:
+        - Baixei da página de Releases
+        - Compilei com ./build.sh
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Prints ou informações extras
+      description: Arraste imagens para cá, se ajudar.

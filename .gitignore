@@ -1,0 +1,12 @@
+# Compilação
+build/
+dist/
+
+# macOS
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
+xcuserdata/
