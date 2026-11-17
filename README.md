@@ -141,7 +141,7 @@ O Google parou de aceitar novos apps na API do Tenor em janeiro de 2026. A chave
 <details>
 <summary><b>Depois de atualizar, o "colar automaticamente" parou de funcionar.</b></summary>
 
-Como o app não tem assinatura paga da Apple, o macOS pode pedir a permissão de Acessibilidade de novo após uma atualização. Remova o Ipasty da lista em Acessibilidade e adicione de novo.
+A partir da versão 1.0.1, a permissão continua valendo nas atualizações. Se você veio da 1.0.0, permita uma última vez: clique em **Abrir Ajustes** no aviso que aparece ao colar, ou remova o Ipasty da lista em Acessibilidade e adicione de novo.
 </details>
 
 <details>

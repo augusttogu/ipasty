@@ -40,6 +40,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         setupPanel()
         registerHotKey()
         watcher.start()
+        // Modo de teste: Ipasty --snapshot-toast arquivo.png → salva uma imagem do aviso e sai
+        if let i = CommandLine.arguments.firstIndex(of: "--snapshot-toast"), i + 1 < CommandLine.arguments.count {
+            let path = CommandLine.arguments[i + 1]
+            Toast.shared.showNeedsAccessibility()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                Toast.shared.snapshot(to: URL(fileURLWithPath: path))
+                NSApp.terminate(nil)
+            }
+            return
+        }
         // Modo de teste: Ipasty --snapshot arquivo.png → salva uma imagem do painel e sai
         if let i = CommandLine.arguments.firstIndex(of: "--snapshot"), i + 1 < CommandLine.arguments.count {
             let path = CommandLine.arguments[i + 1]
@@ -255,10 +265,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
         watcher.markOwnWrite()
         store.moveToTop(item.id)
-        hidePanel()
-        if autoPaste && AXIsProcessTrusted() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { Self.sendCmdV() }
-        }
+        finishPaste()
     }
 
     /// Cola um texto (emoji, símbolo, kaomoji) no app em que você estava.
@@ -300,10 +307,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         }
     }
 
+    /// Fecha o painel e cola no app em que você estava.
+    /// Sem a permissão de Acessibilidade o macOS bloqueia o ⌘V, então avisa em vez de falhar calado.
     private func finishPaste() {
         hidePanel()
-        if autoPaste && AXIsProcessTrusted() {
+        guard autoPaste else { return }
+        if AXIsProcessTrusted() {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { Self.sendCmdV() }
+        } else {
+            Toast.shared.showNeedsAccessibility()
         }
     }
 

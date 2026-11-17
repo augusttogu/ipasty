@@ -69,7 +69,10 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 PLIST
 
 # Assinatura ad-hoc (sem conta de desenvolvedor Apple)
-codesign --force --deep --sign - "$APP"
+# Requisito fixo pelo identificador: assim a permissão de Acessibilidade
+# continua valendo depois de recompilar ou atualizar o app.
+codesign --force --deep --sign - \
+  --requirements "=designated => identifier \"io.github.augusttogu.ipasty\"" "$APP"
 
 if [[ $ZIP == 1 ]]; then
   mkdir -p dist
