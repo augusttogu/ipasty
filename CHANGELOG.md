@@ -5,6 +5,11 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e
 
 ## [Não lançado]
 
+### Corrigido
+
+- Clicar num item às vezes só copiava, sem colar, e parecia que o app tinha travado. Agora, quando o macOS não deixa colar, aparece um aviso perto do cursor com um botão que abre a permissão de Acessibilidade.
+- A permissão de Acessibilidade deixava de valer depois de recompilar ou atualizar o app. Agora ela continua valendo nas próximas versões (é preciso permitir de novo uma única vez ao instalar esta versão).
+
 ## [1.0.0] - 2026-11-16
 
 Primeira versão pública. 🎉

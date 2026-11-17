@@ -107,7 +107,7 @@ Clique no ícone do Ipasty na barra de menus e ligue **Abrir ao iniciar o Mac**.
 | Problema | O que fazer |
 |---|---|
 | O <kbd>⇧⌘V</kbd> não abre nada | Veja se o ícone de prancheta está na barra de menus. Se não estiver, abra o Ipasty de novo pela pasta Aplicativos. |
-| Clicar num item não cola | Confira a permissão de Acessibilidade. Depois de atualizar o app, pode ser preciso remover o Ipasty da lista e adicionar de novo. |
+| Clicar num item não cola (aparece o aviso "Copiado! Cole com ⌘V") | Clique em **Abrir Ajustes** no aviso e ative o Ipasty em Acessibilidade. Se ele já aparece ativado, selecione o Ipasty, clique em **−** para remover e adicione de novo com **+**. |
 | "Chave do GIPHY inválida" | Na aba GIF, clique na engrenagem → **Trocar chave do GIPHY** e cole a chave de novo. |
 | "Limite do GIPHY atingido" | A chave gratuita permite 100 buscas por hora. Espere um pouco. |
 | Algum emoji não aparece | O Ipasty mostra só os emojis que a sua versão do macOS sabe desenhar. Atualize o macOS para ver os mais novos. |
