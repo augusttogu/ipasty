@@ -1,31 +1,31 @@
-## O que muda
+## What changes
 
-<!-- Descreva a mudança em poucas linhas. -->
+<!-- Describe the change in a few lines. -->
 
-Resolve #<!-- número da issue, se houver -->
+Closes #<!-- issue number, if any -->
 
-## Tipo de mudança
+## Type of change
 
-- [ ] 🐛 Correção de problema
-- [ ] ✨ Nova funcionalidade
-- [ ] 💄 Visual / textos
-- [ ] 📝 Documentação
-- [ ] 🔧 Build, CI ou ferramentas
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 💄 UI / copy
+- [ ] 📝 Documentation
+- [ ] 🔧 Build, CI or tooling
 
-## Como testei
+## How I tested
 
-<!-- Ex.: rodei ./build.sh, abri a aba X e fiz Y. -->
+<!-- E.g.: ran ./build.sh, opened tab X and did Y. -->
 
-## Prints (se mudou algo visual)
+## Screenshots (if something visual changed)
 
-| Antes | Depois |
+| Before | After |
 |---|---|
 |  |  |
 
 ## Checklist
 
-- [ ] Compila com `./build.sh` sem erros
-- [ ] Testei no meu Mac (versão do macOS: )
-- [ ] Atualizei o `CHANGELOG.md` na seção **Não lançado**
-- [ ] Não incluí chaves de API, dados pessoais nem arquivos copiados do macOS
-- [ ] Li o [guia de contribuição](../CONTRIBUTING.md)
+- [ ] Builds with `./build.sh` without errors
+- [ ] Tested on my Mac (macOS version: )
+- [ ] Updated `CHANGELOG.md` under **Unreleased**
+- [ ] No API keys, personal data or files copied from macOS included
+- [ ] Read the [contributing guide](../CONTRIBUTING.md)

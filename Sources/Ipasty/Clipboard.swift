@@ -29,7 +29,7 @@ final class Store: ObservableObject {
     @Published var focusTick = 0
     @Published var hoveredID: UUID?
 
-    let maxItems = 300
+    var maxItems: Int { AppSettings.shared.maxItems }
     let dir: URL
     let imagesDir: URL
     private var thumbCache: [String: NSImage] = [:]
@@ -179,7 +179,7 @@ final class ClipboardWatcher {
             return
         }
 
-        if types.contains(.png) || types.contains(.tiff) {
+        if AppSettings.shared.saveImages, types.contains(.png) || types.contains(.tiff) {
             var png = pb.data(forType: .png)
             if png == nil, let tiff = pb.data(forType: .tiff), let rep = NSBitmapImageRep(data: tiff) {
                 png = rep.representation(using: .png, properties: [:])
@@ -238,7 +238,6 @@ struct CardView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 HStack(spacing: 4) {
-                    if isFavorite { Image(systemName: "heart.fill").font(.system(size: 9)).foregroundStyle(.pink) }
                     Text(caption)
                         .font(.system(size: 10.5))
                         .foregroundStyle(.secondary)
@@ -269,6 +268,19 @@ struct CardView: View {
 
                 Spacer(minLength: 10)
 
+                HStack(spacing: 0) {
+                if let onFavorite {
+                    Button(action: onFavorite) {
+                        Image(systemName: isFavorite ? "heart.fill" : "heart")
+                            .font(.system(size: 12))
+                            .foregroundStyle(isFavorite ? Color.pink : Color.secondary)
+                            .frame(width: 26, height: 22)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .help(isFavorite ? "Remover dos favoritos (⌘F)" : "Adicionar aos favoritos (⌘F)")
+                }
+
                 Button(action: onTogglePin) {
                     Image(systemName: item.pinned ? "pin.fill" : "pin")
                         .font(.system(size: 12))
@@ -279,6 +291,7 @@ struct CardView: View {
                 }
                 .buttonStyle(.plain)
                 .help(item.pinned ? "Desafixar (⌘P)" : "Fixar — não some ao limpar (⌘P)")
+                }
             }
         }
         .padding(.leading, 12).padding(.trailing, 6).padding(.vertical, 10)

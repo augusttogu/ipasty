@@ -8,13 +8,13 @@ REPO="${1:-augusttogu/ipasty}"
 echo "→ Configurando $REPO"
 
 gh repo edit "$REPO" \
-  --description "Área de transferência, emojis, GIFs e caracteres especiais num atalho só, para macOS. Inspirado no Win+V do Windows." \
+  --description "Free clipboard manager & emoji picker for Mac (macOS menu bar app): clipboard history, emoji, GIFs, kaomoji and special characters in one shortcut. Like Windows Win+V for Apple Macs." \
   --homepage "https://github.com/$REPO#readme" \
   --enable-issues --enable-discussions \
   --enable-wiki=false --enable-projects=false \
   --enable-squash-merge --enable-merge-commit=false --enable-rebase-merge=false \
   --delete-branch-on-merge \
-  --add-topic macos,clipboard,clipboard-manager,emoji,emoji-picker,gif,giphy,kaomoji,unicode,menubar-app,swift,swiftui,productivity,open-source
+  --add-topic macos,mac,apple,macos-app,clipboard-history,paste,clipboard,clipboard-manager,emoji,emoji-picker,gif,giphy,kaomoji,unicode,menubar-app,swift,swiftui,productivity,open-source
 
 echo "→ Criando a regra de proteção da main"
 # Remove uma regra anterior com o mesmo nome, para o script poder ser rodado de novo

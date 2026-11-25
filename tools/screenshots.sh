@@ -60,6 +60,10 @@ for look in light dark; do
   shoot "gif-$look" 2 $look
 done
 shoot "emoji-search-light" 1 light "coração"
+for look in light dark; do
+  IPASTY_DATA_DIR="$DEMO" "$BIN" --snapshot "$OUT/settings-$look.png" --settings --appearance $look
+  echo "  $OUT/settings-$look.png"
+done
 shoot "symbols-search-light" 4 light "arrow"
 
 echo "→ Montando imagem de capa"
