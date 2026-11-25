@@ -1,89 +1,92 @@
 <div align="center">
 
-<img src="docs/icon.png" width="128" alt="Ícone do Ipasty">
+<img src="docs/icon.png" width="128" alt="Ipasty icon">
 
-# Ipasty
+# Ipasty — Clipboard Manager & Emoji Picker for Mac
 
-**Área de transferência, emojis, GIFs e caracteres especiais — tudo num atalho só, no seu Mac.**
+**Clipboard history, emoji, GIFs and special characters behind one shortcut on your Mac.**
 
-Inspirado no painel <kbd>Win</kbd> + <kbd>V</kbd> do Windows, feito com componentes nativos do macOS.
+A free, open-source macOS menu bar app inspired by the Windows <kbd>Win</kbd> + <kbd>V</kbd> panel, built natively for Apple Silicon and Intel Macs with Swift and SwiftUI.
 
-[![Última versão](https://img.shields.io/github/v/release/augusttogu/ipasty?label=vers%C3%A3o&color=7c5cff)](https://github.com/augusttogu/ipasty/releases/latest)
-[![Compilação](https://img.shields.io/github/actions/workflow/status/augusttogu/ipasty/build.yml?branch=main&label=compila%C3%A7%C3%A3o)](https://github.com/augusttogu/ipasty/actions/workflows/build.yml)
-[![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-22c55e)](LICENSE)
-[![macOS 14+](https://img.shields.io/badge/macOS-14%2B-111111?logo=apple)](#-instalação)
+[![Latest release](https://img.shields.io/github/v/release/augusttogu/ipasty?label=release&color=7c5cff)](https://github.com/augusttogu/ipasty/releases/latest)
+[![Build](https://img.shields.io/github/actions/workflow/status/augusttogu/ipasty/build.yml?branch=main&label=build)](https://github.com/augusttogu/ipasty/actions/workflows/build.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
+[![macOS 14+](https://img.shields.io/badge/macOS-14%2B-111111?logo=apple)](#-install)
 [![Swift](https://img.shields.io/badge/Swift-SwiftUI-F05138?logo=swift&logoColor=white)](Sources/Ipasty)
 [![Downloads](https://img.shields.io/github/downloads/augusttogu/ipasty/total?label=downloads&color=0ea5e9)](https://github.com/augusttogu/ipasty/releases)
 
-[**⬇️ Baixar**](https://github.com/augusttogu/ipasty/releases/latest) ·
-[Instalação](#-instalação) ·
-[Atalhos](#️-atalhos) ·
-[Privacidade](PRIVACY.md) ·
-[Contribuir](CONTRIBUTING.md) ·
-[English](README.en.md)
+[**⬇️ Download for Mac**](https://github.com/augusttogu/ipasty/releases/latest) ·
+[Install](#-install) ·
+[Shortcuts](#️-keyboard-shortcuts) ·
+[Privacy](PRIVACY.md) ·
+[Contributing](CONTRIBUTING.md) ·
+[Português (BR)](README.pt-BR.md)
 
 <br>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/hero-dark.png">
-  <img src="docs/screenshots/hero.png" alt="Ipasty: área de transferência, emojis e caracteres especiais" width="900">
+  <img src="docs/screenshots/hero.png" alt="Ipasty for macOS: clipboard history, emoji picker and special characters" width="900">
 </picture>
 
 </div>
 
 ---
 
-## ✨ O que ele faz
+## ✨ What it does
 
-Aperte <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd> em qualquer app e um painel abre perto do cursor com seis abas:
+Press <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd> in any Mac app and a panel opens next to the cursor with six tabs:
 
-| | Aba | O que tem |
+| | Tab | What's inside |
 |:-:|---|---|
-| 📋 | **Área de transferência** | Tudo o que você copia (textos e imagens), com busca. **Fixe** 📌 o que não pode sumir. |
-| ♡ | **Favoritos** | Seus emojis, GIFs, símbolos, kaomojis e textos favoritos, mais os **usados recentemente**. |
-| 🙂 | **Emojis** | Todos os emojis do macOS em 9 categorias, com **busca em português** ("coração", "gato", "festa"). |
-| 🎞️ | **GIFs** | Busca e GIFs em alta pelo GIPHY. Clique e o GIF animado é colado. |
-| ;-) | **Kaomojis** | ¯\\\_(ツ)\_/¯ (╯°□°)╯︵ ┻━┻ ʕ•ᴥ•ʔ e mais de 140 outros, por humor. |
-| Ω | **Caracteres especiais** | As mesmas categorias do Visualizador de Caracteres do Mac (setas, moedas, matemática, alfabetos…) e o **Unicode completo**. |
+| 📋 | **Clipboard** | Everything you copy (text and images), searchable. **Pin** 📌 what must stay and **favorite** ♡ what you reuse. |
+| ♡ | **Favorites** | Your favorite emoji, GIFs, symbols, kaomoji and text snippets, plus **recently used** items. |
+| 🙂 | **Emoji** | Every Apple emoji in 9 categories, with search ("heart", "cat", "party"). |
+| 🎞️ | **GIFs** | Trending and search powered by GIPHY. Click and the animated GIF is pasted. |
+| ;-) | **Kaomoji** | ¯\\\_(ツ)\_/¯ (╯°□°)╯︵ ┻━┻ ʕ•ᴥ•ʔ and 140+ more, grouped by mood. |
+| Ω | **Special characters** | The same categories as the macOS Character Viewer (arrows, currency, math, alphabets…) plus the **full Unicode table**, with official names and code points. |
 
-E ainda:
+Plus:
 
-- 🪶 **Leve:** um app nativo (Swift + SwiftUI) de poucos MB, sem Electron, que fica só na barra de menus.
-- ⌨️ **Feito para teclado:** setas, <kbd>Enter</kbd> para colar e <kbd>⌘1</kbd>–<kbd>⌘9</kbd> para os primeiros itens.
-- 🔒 **Privado:** o histórico fica **só no seu Mac**. Senhas copiadas de gerenciadores (1Password, Bitwarden…) são ignoradas.
-- 🌗 Acompanha o modo **claro e escuro** do sistema.
+- 🪶 **Lightweight:** a native Mac app (Swift + SwiftUI) of a few MB. No Electron. Lives in the menu bar only.
+- ⚙️ **Settings window:** launch at login, choose the global shortcut, turn tabs on or off, history size, image capture, and Accessibility permission status.
+- 🚀 **Starts with your Mac:** launch at login is on by default (you can turn it off).
+- 🔐 **Asks for permission once:** the Accessibility permission survives app updates.
+- ⌨️ **Keyboard first:** arrows, <kbd>Enter</kbd> to paste, <kbd>⌘1</kbd>–<kbd>⌘9</kbd> for the first items.
+- 🔒 **Private:** your history stays **on your Mac**. Passwords copied from password managers (1Password, Bitwarden…) are ignored.
+- 🌗 Follows macOS **light and dark mode**.
 
-## 🖼️ Galeria
+## 🖼️ Gallery
 
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/clipboard-light.png" width="260"><br><sub>Área de transferência</sub></td>
-    <td align="center"><img src="docs/screenshots/favorites-light.png" width="260"><br><sub>Favoritos e recentes</sub></td>
-    <td align="center"><img src="docs/screenshots/emoji-search-light.png" width="260"><br><sub>Busca de emojis em português</sub></td>
+    <td align="center"><img src="docs/screenshots/clipboard-light.png" width="260"><br><sub>Clipboard history with pin and favorite</sub></td>
+    <td align="center"><img src="docs/screenshots/favorites-light.png" width="260"><br><sub>Favorites and recents</sub></td>
+    <td align="center"><img src="docs/screenshots/emoji-search-light.png" width="260"><br><sub>Emoji search</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/kaomoji-dark.png" width="260"><br><sub>Kaomojis</sub></td>
-    <td align="center"><img src="docs/screenshots/symbols-search-light.png" width="260"><br><sub>Caracteres com nome e código</sub></td>
-    <td align="center"><img src="docs/screenshots/gif-light.png" width="260"><br><sub>Ativação dos GIFs</sub></td>
+    <td align="center"><img src="docs/screenshots/kaomoji-dark.png" width="260"><br><sub>Kaomoji</sub></td>
+    <td align="center"><img src="docs/screenshots/symbols-search-light.png" width="260"><br><sub>Characters with names and code points</sub></td>
+    <td align="center"><img src="docs/screenshots/settings-light.png" width="260"><br><sub>Settings</sub></td>
   </tr>
 </table>
 
-## 📦 Instalação
+## 📦 Install
 
-> Requer **macOS 14 (Sonoma) ou mais novo**, em Mac com Apple Silicon ou Intel.
+> Requires **macOS 14 Sonoma or later** on an **Apple Silicon** (M1, M2, M3, M4…) or **Intel** Mac.
 
-### Opção 1 — Baixar pronto (recomendado)
+### Option 1 — Download (recommended)
 
-1. Baixe o arquivo **`Ipasty-x.y.z.zip`** da [última versão](https://github.com/augusttogu/ipasty/releases/latest).
-2. Abra o `.zip` e arraste o **Ipasty** para a pasta **Aplicativos**.
-3. Abra o Ipasty. Como o app ainda não é assinado pela Apple, o macOS vai avisar na primeira vez:
-   vá em **Ajustes do Sistema → Privacidade e Segurança**, role até o aviso sobre o Ipasty e clique em **Abrir Mesmo Assim**.
+1. Download **`Ipasty-x.y.z.zip`** from the [latest release](https://github.com/augusttogu/ipasty/releases/latest).
+2. Open the `.zip` and drag **Ipasty** into your **Applications** folder.
+3. Open Ipasty. The app isn't notarized by Apple yet, so macOS warns you the first time:
+   go to **System Settings → Privacy & Security**, scroll to the Ipasty message and click **Open Anyway**.
 
-> 💡 Prefere o Terminal? Depois de mover para Aplicativos, rode `xattr -dr com.apple.quarantine /Applications/Ipasty.app`.
+> 💡 Prefer the Terminal? After moving it to Applications, run `xattr -dr com.apple.quarantine /Applications/Ipasty.app`.
 
-### Opção 2 — Compilar a partir do código
+### Option 2 — Build from source
 
-Precisa só das Ferramentas de Linha de Comando da Apple (`xcode-select --install`), não do Xcode completo.
+Only Apple's Command Line Tools are needed (`xcode-select --install`), not the full Xcode.
 
 ```bash
 git clone https://github.com/augusttogu/ipasty.git
@@ -91,98 +94,115 @@ cd ipasty
 ./build.sh
 ```
 
-O app é instalado em `~/Applications/Ipasty.app` e já abre sozinho.
+The app is installed to `~/Applications/Ipasty.app` and opens automatically.
 
-📖 Passo a passo detalhado, com solução de problemas: **[docs/INSTALACAO.md](docs/INSTALACAO.md)**.
+📖 Step-by-step guide with troubleshooting: **[docs/INSTALL.md](docs/INSTALL.md)**.
 
-## 🚀 Primeiros passos
+## 🚀 Getting started
 
-1. **Procure o ícone** de prancheta na barra de menus, lá em cima.
-2. **Copie qualquer coisa** e aperte <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd>.
-3. **Permita a Acessibilidade** (Ajustes do Sistema → Privacidade e Segurança → Acessibilidade → ative o **Ipasty**). É isso que permite que o clique cole o item direto no app em que você está. Sem a permissão, o item vai só para a área de transferência e você cola com <kbd>⌘</kbd> <kbd>V</kbd>.
-4. **(Opcional) Ative os GIFs:** na aba GIF, siga os 3 passos para criar uma chave gratuita do GIPHY.
-5. **(Opcional)** No menu do ícone, ligue **Abrir ao iniciar o Mac**.
+1. **Find the clipboard icon** in the Mac menu bar.
+2. **Copy anything** and press <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd>.
+3. **Allow Accessibility** when asked (System Settings → Privacy & Security → Accessibility → turn on **Ipasty**). This lets a click paste straight into the app you're using. Without it, the item is only copied and you paste with <kbd>⌘</kbd> <kbd>V</kbd>.
+4. **(Optional) Enable GIFs:** in the GIF tab, follow the 3 steps to create a free GIPHY key.
+5. **Open Settings** from the menu bar icon, the ⚙️ button in the panel, or <kbd>⌘</kbd> <kbd>,</kbd>. Opening Ipasty again from Finder or Spotlight also shows Settings.
 
-## ⌨️ Atalhos
+## ⌨️ Keyboard shortcuts
 
-| Atalho | Ação |
+| Shortcut | Action |
 |---|---|
-| <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd> | Abrir/fechar o Ipasty |
-| <kbd>↑</kbd> <kbd>↓</kbd> e <kbd>Enter</kbd> | Escolher e colar um item da área de transferência |
-| <kbd>⌘</kbd> <kbd>1</kbd> … <kbd>⌘</kbd> <kbd>9</kbd> | Colar um dos 9 primeiros itens |
-| <kbd>⌘</kbd> <kbd>P</kbd> | Fixar ou desafixar o item selecionado |
-| <kbd>⌘</kbd> <kbd>⌫</kbd> | Apagar o item selecionado |
-| <kbd>⌃</kbd> <kbd>Tab</kbd> / <kbd>⌃</kbd> <kbd>⇧</kbd> <kbd>Tab</kbd> | Próxima aba / aba anterior |
-| Clique direito | Adicionar ou remover dos favoritos |
-| <kbd>Esc</kbd> | Fechar |
+| <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>V</kbd> | Open/close Ipasty (can be changed in Settings) |
+| <kbd>↑</kbd> <kbd>↓</kbd> and <kbd>Enter</kbd> | Pick and paste a clipboard item |
+| <kbd>⌘</kbd> <kbd>1</kbd> … <kbd>⌘</kbd> <kbd>9</kbd> | Paste one of the first 9 items |
+| <kbd>⌘</kbd> <kbd>P</kbd> | Pin or unpin the selected item |
+| <kbd>⌘</kbd> <kbd>F</kbd> | Add or remove the selected item from favorites |
+| <kbd>⌘</kbd> <kbd>⌫</kbd> | Delete the selected item |
+| <kbd>⌘</kbd> <kbd>,</kbd> | Open Settings |
+| <kbd>⌃</kbd> <kbd>Tab</kbd> / <kbd>⌃</kbd> <kbd>⇧</kbd> <kbd>Tab</kbd> | Next / previous tab |
+| Right-click | Add or remove from favorites |
+| <kbd>Esc</kbd> | Close |
 
-## 🔒 Privacidade
+## ⚙️ Settings
 
-- O histórico, os favoritos e as preferências ficam em `~/Library/Application Support/Ipasty` e **nunca saem do seu Mac**.
-- O Ipasty não tem telemetria, conta, nem servidor próprio.
-- A única conexão com a internet é com o **GIPHY**, e só quando você usa a aba GIF.
+| Setting | Default |
+|---|---|
+| Launch at login | On |
+| Global shortcut (⇧⌘V, ⌥⌘V, ⌃⌘V or ⌃⌥V) | ⇧⌘V |
+| Paste automatically into the previous app | On |
+| Visible tabs (Favorites, Emoji, GIFs, Kaomoji, Special characters) | All on |
+| History size (50 – 1000 items) | 300 |
+| Save copied images | On |
 
-Detalhes em **[PRIVACY.md](PRIVACY.md)**.
+The **Permissions** section shows whether Accessibility is granted, opens the right System Settings pane, and has a **Reset permission** button for when Ipasty shows as enabled in the list but pasting still doesn't work.
 
-## ❓ Perguntas frequentes
+## 🔒 Privacy
+
+- History, favorites and preferences live in `~/Library/Application Support/Ipasty` and **never leave your Mac**.
+- No telemetry, no account, no server of our own.
+- The only network connection is to **GIPHY**, and only when you use the GIF tab.
+
+Details in **[PRIVACY.md](PRIVACY.md)**.
+
+## ❓ FAQ
 
 <details>
-<summary><b>O <kbd>⇧⌘V</kbd> já fazia "colar sem formatação" em alguns apps. E agora?</b></summary>
+<summary><b>macOS keeps asking for the Accessibility permission again. Why?</b></summary>
 
-O Ipasty usa esse atalho em todo o sistema enquanto está aberto. Escolher outro atalho está no [roteiro](#️-roteiro). Contribuições são bem-vindas!
+macOS ties the permission to the app's code signature. Older Ipasty builds were signed in a way that changed on every build, so each update looked like a new app. Since **1.1.0** the signature requirement is stable (it's the bundle identifier `io.github.augusttogu.ipasty`), so you grant it **once** and it survives updates. Ipasty also no longer shows the system prompt on every launch.
+
+If you're coming from 1.0.0, open **Settings → Permissions → Reset permission** once to clear the old entry and grant it again.
 </details>
 
 <details>
-<summary><b>Por que GIPHY e não Tenor?</b></summary>
+<summary><b><kbd>⇧⌘V</kbd> used to be "Paste and Match Style" in some apps. What now?</b></summary>
 
-O Google parou de aceitar novos apps na API do Tenor em janeiro de 2026. A chave gratuita do GIPHY permite até 100 buscas por hora, o que sobra para uso pessoal.
+Pick another global shortcut in **Settings** (⌥⌘V, ⌃⌘V or ⌃⌥V).
 </details>
 
 <details>
-<summary><b>Depois de atualizar, o "colar automaticamente" parou de funcionar.</b></summary>
+<summary><b>Why GIPHY and not Tenor?</b></summary>
 
-Como o app não tem assinatura paga da Apple, o macOS pode pedir a permissão de Acessibilidade de novo após uma atualização. Remova o Ipasty da lista em Acessibilidade e adicione de novo.
+Google stopped accepting new apps on the Tenor API in January 2026. The free GIPHY key allows up to 100 searches per hour, which is plenty for personal use.
 </details>
 
 <details>
-<summary><b>Os nomes dos emojis e caracteres vêm de onde?</b></summary>
+<summary><b>Where do the emoji and character names come from?</b></summary>
 
-Do próprio macOS (os mesmos do Visualizador de Caracteres), lidos na hora em que o app abre. A ordem e as categorias dos emojis vêm do arquivo oficial do Unicode. Veja [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+From macOS itself (the same names as the Character Viewer), read when the app starts. Emoji order and categories come from the official Unicode file. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 </details>
 
-## 🗺️ Roteiro
+## 🗺️ Roadmap
 
-Ideias para as próximas versões. Quer ajudar? Abra uma [issue](https://github.com/augusttogu/ipasty/issues) ou mande um pull request.
+Ideas for upcoming versions. Want to help? Open an [issue](https://github.com/augusttogu/ipasty/issues) or send a pull request.
 
-- [ ] Escolher o atalho de teclado nas preferências
-- [ ] Tons de pele nos emojis
-- [ ] Colar sem formatação
-- [ ] Ignorar apps específicos no histórico
-- [ ] Busca de caracteres em português
-- [ ] Tradução da interface para inglês e espanhol
-- [ ] Assinatura e notarização da Apple
-- [ ] Instalação pelo Homebrew
+- [x] Choose the keyboard shortcut in Settings
+- [x] Settings window
+- [ ] Emoji skin tones
+- [ ] Paste as plain text
+- [ ] Ignore specific apps in the history
+- [ ] English and Spanish interface (currently Brazilian Portuguese)
+- [ ] Apple code signing and notarization
+- [ ] Homebrew cask
 
-## 🤝 Contribuindo
+## 🤝 Contributing
 
-Contribuições são muito bem-vindas, de correção de texto a funcionalidades novas!
+Contributions are very welcome, from typo fixes to new features!
 
-- 🐛 Achou um problema? [Abra uma issue](https://github.com/augusttogu/ipasty/issues/new/choose).
-- 💡 Tem uma ideia? Use o modelo de **sugestão de melhoria**.
-- 🛠️ Quer programar? Leia o **[guia de contribuição](CONTRIBUTING.md)**. Toda mudança entra por *pull request* e é revisada antes de ir para a versão principal.
+- 🐛 Found a bug? [Open an issue](https://github.com/augusttogu/ipasty/issues/new/choose).
+- 💡 Have an idea? Use the **feature request** template.
+- 🛠️ Want to code? Read the **[contributing guide](CONTRIBUTING.md)**. Every change goes through a pull request and is reviewed before reaching `main`.
 
-Ao participar, você concorda com o nosso **[Código de Conduta](CODE_OF_CONDUCT.md)**.
+By participating you agree to our **[Code of Conduct](CODE_OF_CONDUCT.md)**.
 
-## 📄 Licença e termos
+## 📄 License
 
-- O código do Ipasty é livre, sob a **[Licença MIT](LICENSE)**: você pode usar, modificar e redistribuir, mantendo o aviso de copyright.
-- O software é fornecido **"como está"**, sem garantias. Veja a licença para os termos completos.
-- Dados e serviços de terceiros (Unicode, GIPHY, dados do macOS) têm termos próprios: **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**.
-- Ipasty é um projeto independente, sem relação com a Apple, a Microsoft ou o GIPHY. Os nomes citados pertencem aos seus donos.
+- Ipasty is free software under the **[MIT License](LICENSE)**.
+- It is provided **"as is"**, without warranty.
+- Third-party data and services (Unicode, GIPHY, macOS data) have their own terms: **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**.
+- Ipasty is an independent project, not affiliated with Apple, Microsoft or GIPHY. Mac, macOS and Apple are trademarks of Apple Inc.
 
 <div align="center">
 <br>
-Feito com ☕ no Brasil por <a href="https://github.com/augusttogu">@augusttogu</a> e <a href="https://github.com/augusttogu/ipasty/graphs/contributors">colaboradores</a>.
+Made with ☕ in Brazil by <a href="https://github.com/augusttogu">@augusttogu</a> and <a href="https://github.com/augusttogu/ipasty/graphs/contributors">contributors</a>.
 <br><br>
 <img src="https://img.shields.io/badge/Powered%20by-GIPHY-000000" alt="Powered by GIPHY">
 </div>

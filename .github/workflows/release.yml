@@ -9,24 +9,24 @@ permissions:
 
 jobs:
   release:
-    name: Publicar versão
+    name: Publish release
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v7
 
-      - name: Conferir versão
+      - name: Check version
         run: |
           TAG="${GITHUB_REF_NAME#v}"
           FILE="$(cat VERSION)"
           if [ "$TAG" != "$FILE" ]; then
-            echo "A tag v$TAG não bate com o arquivo VERSION ($FILE)."; exit 1
+            echo "Tag v$TAG does not match the VERSION file ($FILE)."; exit 1
           fi
           echo "VERSION=$FILE" >> "$GITHUB_ENV"
 
-      - name: Compilar app universal
+      - name: Build universal app
         run: ./build.sh --zip
 
-      - name: Notas da versão
+      - name: Release notes
         run: |
           awk -v v="$VERSION" '
             $0 ~ "^## \\[" v "\\]" { on=1; next }
@@ -36,16 +36,16 @@ jobs:
           cat >> notes.md <<'EOF'
 
           ---
-          ### Como instalar
-          1. Baixe o **Ipasty-*.zip** abaixo, abra e arraste o app para **Aplicativos**.
-          2. Na primeira vez: **Ajustes do Sistema → Privacidade e Segurança → Abrir Mesmo Assim**.
-          3. Permita a **Acessibilidade** para colar com um clique.
+          ### How to install on your Mac
+          1. Download **Ipasty-*.zip** below, open it and drag the app into **Applications**.
+          2. First launch: **System Settings → Privacy & Security → Open Anyway**.
+          3. Allow **Accessibility** so a click pastes directly (asked only once; it survives updates).
 
-          Guia completo: [docs/INSTALACAO.md](https://github.com/${{ github.repository }}/blob/main/docs/INSTALACAO.md)
+          Full guide: [docs/INSTALL.md](https://github.com/${{ github.repository }}/blob/main/docs/INSTALL.md)
           EOF
           shasum -a 256 dist/*.zip | tee dist/SHA256SUMS.txt
 
-      - name: Publicar
+      - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

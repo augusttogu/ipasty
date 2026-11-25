@@ -1,84 +1,89 @@
-# Como contribuir com o Ipasty
+# Contributing to Ipasty
 
-Que bom que você quer ajudar! 💜 Toda contribuição conta: reportar um problema, sugerir uma ideia, melhorar um texto ou escrever código.
+Thanks for wanting to help! 💜 Every contribution counts: reporting a bug, suggesting an idea, improving a text or writing code.
 
-## Antes de começar
+## Before you start
 
-- Leia o [Código de Conduta](CODE_OF_CONDUCT.md).
-- Procure nas [issues](https://github.com/augusttogu/ipasty/issues) se o assunto já foi discutido.
-- Para mudanças grandes, **abra uma issue primeiro** e combine a ideia antes de programar. Assim ninguém perde tempo.
+- Read the [Code of Conduct](CODE_OF_CONDUCT.md).
+- Search the [issues](https://github.com/augusttogu/ipasty/issues) to see if the topic has been discussed.
+- For big changes, **open an issue first** and agree on the idea before coding. That way nobody wastes time.
 
-## Reportar um problema ou sugerir algo
+## Reporting a bug or suggesting something
 
-Use os modelos em [Nova issue](https://github.com/augusttogu/ipasty/issues/new/choose):
+Use the templates under [New issue](https://github.com/augusttogu/ipasty/issues/new/choose):
 
-- 🐛 **Relatar um problema**: diga a versão do macOS, a versão do Ipasty e os passos para reproduzir.
-- 💡 **Sugerir uma melhoria**: explique o problema que a ideia resolve.
+- 🐛 **Bug report**: include your macOS version, Ipasty version and steps to reproduce.
+- 💡 **Feature request**: explain the problem the idea solves.
 
-> Nunca cole conteúdo do seu histórico, chaves de API ou dados pessoais numa issue.
+> Never paste clipboard history, API keys or personal data in an issue.
 
-## Preparando o ambiente
+## Setting up
 
-Você só precisa de um Mac com macOS 14 ou mais novo e as Ferramentas de Linha de Comando da Apple:
+All you need is a Mac running macOS 14 or later and Apple's Command Line Tools:
 
 ```bash
 xcode-select --install
-git clone https://github.com/SEU-USUARIO/ipasty.git   # depois de fazer o fork
+git clone https://github.com/YOUR-USERNAME/ipasty.git   # after forking
 cd ipasty
-./build.sh            # compila, instala em ~/Applications e abre
+./build.sh            # builds, installs to ~/Applications and opens it
 ```
 
-Outros comandos:
+Other commands:
 
 ```bash
-./build.sh --no-install   # só compila em build/Ipasty.app
-./build.sh --zip          # gera dist/Ipasty-<versão>.zip (universal)
-./tools/screenshots.sh    # regera os prints do README com dados de exemplo
+./build.sh --no-install   # only builds build/Ipasty.app
+./build.sh --zip          # creates dist/Ipasty-<version>.zip (universal)
+./tools/screenshots.sh    # regenerates the README screenshots with sample data
 ```
 
-## Organização do código
+### Code signing and the Accessibility permission
+
+`build.sh` signs the app ad hoc with a **stable designated requirement** (`identifier "io.github.augusttogu.ipasty"`), so macOS keeps the Accessibility permission between builds. If you have an `Apple Development` or `Developer ID Application` certificate in your Keychain it is used automatically; you can also force one with `SIGN_IDENTITY="…" ./build.sh`.
+
+## Code layout
 
 ```
 Sources/Ipasty/
-├── main.swift         # App, barra de menus, atalho global, painel, colar
-├── Clipboard.swift    # Histórico: modelo, armazenamento, monitor da área de transferência, cartão
-├── Picker.swift       # Abas, favoritos e recentes, emojis, caracteres, kaomojis
-├── Giphy.swift        # Integração com a API do GIPHY e GIF animado
-├── Views.swift        # Interface (SwiftUI) de todas as abas
-└── SystemData.swift   # Pasta de dados e leitura dos dados de emoji/caracteres do macOS
-Resources/bundle/      # Arquivos que vão dentro do app (emoji-test.txt do Unicode)
-tools/                 # Ícone, prints do README e imagem de capa
-docs/                  # Instalação, manutenção, prints
+├── main.swift         # App, menu bar, global shortcut, panel, pasting
+├── Settings.swift     # Preferences (AppSettings) and the Settings window
+├── Clipboard.swift    # History: model, storage, clipboard watcher, card view
+├── Picker.swift       # Tabs, favorites and recents, emoji, characters, kaomoji
+├── Giphy.swift        # GIPHY API integration and animated GIFs
+├── Views.swift        # SwiftUI interface for every tab
+└── SystemData.swift   # Data folder and reading emoji/character data from macOS
+Resources/bundle/      # Files bundled inside the app (Unicode emoji-test.txt)
+tools/                 # Icon, README screenshots and hero image
+docs/                  # Install guide, maintenance, screenshots
 ```
 
-Algumas regras do projeto:
+Project rules:
 
-- **Sem dependências externas.** Só frameworks da Apple (AppKit, SwiftUI, Carbon, CoreText, SQLite3).
-- **Não use `@State`/`@Observable`.** As Ferramentas de Linha de Comando não trazem os plugins de macro do SwiftUI. Use `ObservableObject` com `@Published`.
-- **Não copie arquivos da Apple para o repositório.** Dados do sistema devem ser lidos em tempo de execução (veja `SystemData.swift`).
-- **Nunca coloque chaves de API no código.**
-- Textos da interface em português do Brasil.
+- **No external dependencies.** Apple frameworks only (AppKit, SwiftUI, Carbon, CoreText, SQLite3, ServiceManagement).
+- **Don't use `@State`/`@Observable`.** The Command Line Tools don't ship SwiftUI's macro plugins. Use `ObservableObject` with `@Published`.
+- **Don't copy Apple files into the repository.** System data must be read at runtime (see `SystemData.swift`).
+- **Never put API keys in the code.**
+- The UI is currently in Brazilian Portuguese; docs and code comments for contributors are welcome in English.
 
-## Enviando um pull request
+## Sending a pull request
 
-1. Faça um **fork** do repositório e crie um branch a partir de `main`:
-   `git checkout -b melhoria/atalho-personalizado`
-2. Faça as mudanças em commits pequenos e com mensagens claras, por exemplo: `Adiciona escolha de atalho nas preferências`.
-3. Rode `./build.sh` e teste no seu Mac. Se a mudança for visual, rode `./tools/screenshots.sh` e confira as imagens.
-4. Atualize o [CHANGELOG.md](CHANGELOG.md) na seção **Não lançado**.
-5. Abra o pull request preenchendo o modelo. Mudanças visuais: inclua prints de antes e depois.
+1. **Fork** the repository and create a branch from `main`:
+   `git checkout -b feature/custom-shortcut`
+2. Make small commits with clear messages, e.g. `Add shortcut picker to Settings`.
+3. Run `./build.sh` and test on your Mac. For visual changes, run `./tools/screenshots.sh` and check the images.
+4. Update [CHANGELOG.md](CHANGELOG.md) under **Unreleased**.
+5. Open the pull request and fill in the template. For visual changes, include before/after screenshots.
 
-### Como a revisão funciona
+### How review works
 
-- A branch `main` é **protegida**: ninguém envia código direto para ela.
-- Todo pull request precisa:
-  - passar na **compilação automática** (GitHub Actions);
-  - ter **aprovação de um mantenedor** (veja [`.github/CODEOWNERS`](.github/CODEOWNERS));
-  - ter todas as conversas da revisão resolvidas.
-- Os pull requests entram por **squash merge**: cada um vira um único commit na `main`.
+- The `main` branch is **protected**: nobody pushes directly to it.
+- Every pull request needs to:
+  - pass the **automatic build** (GitHub Actions);
+  - be **approved by a maintainer** (see [`.github/CODEOWNERS`](.github/CODEOWNERS));
+  - have all review conversations resolved.
+- Pull requests are **squash merged**: each becomes a single commit on `main`.
 
-## Lançando uma versão (mantenedores)
+## Releasing a version (maintainers)
 
-Veja [docs/MANUTENCAO.md](docs/MANUTENCAO.md).
+See [docs/MANUTENCAO.md](docs/MANUTENCAO.md) (Portuguese).
 
-Obrigado por contribuir! 🙌
+Thanks for contributing! 🙌

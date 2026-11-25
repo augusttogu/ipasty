@@ -1,47 +1,47 @@
-# Privacidade e termos de uso
+# Privacy and terms of use
 
-_Última atualização: 16 de novembro de 2026_
+_Last updated: November 24, 2026_
 
-O Ipasty foi feito para funcionar **inteiramente no seu Mac**. Esta página explica o que o app guarda, para onde os dados vão (spoiler: para lugar nenhum) e as condições de uso.
+Ipasty is built to run **entirely on your Mac**. This page explains what the app stores, where your data goes (spoiler: nowhere) and the terms of use.
 
-## O que o Ipasty guarda
+## What Ipasty stores
 
-Tudo fica na pasta `~/Library/Application Support/Ipasty`, no seu computador:
+Everything lives in `~/Library/Application Support/Ipasty`, on your computer:
 
-| Arquivo | Conteúdo |
+| File | Contents |
 |---|---|
-| `history.json` | Os textos copiados, o app de onde vieram, a data e se estão fixados |
-| `images/` | As imagens copiadas, em PNG |
-| `favorites.json` | Seus favoritos (emojis, símbolos, kaomojis, textos e links de GIFs) |
-| `recents.json` | Os últimos itens usados nas abas de emoji, GIF, kaomoji e caracteres |
+| `history.json` | Copied text, the app it came from, the date and whether it's pinned |
+| `images/` | Copied images, as PNG (can be turned off in Settings) |
+| `favorites.json` | Your favorites (emoji, symbols, kaomoji, text and GIF links) |
+| `recents.json` | The last items used in the emoji, GIF, kaomoji and character tabs |
 
-As preferências (por exemplo, a sua chave do GIPHY) ficam nas preferências do macOS do app (`io.github.augusttogu.ipasty`).
+Preferences (for example, your GIPHY key and the options in Settings) are stored in the app's macOS preferences (`io.github.augusttogu.ipasty`).
 
-- O histórico guarda até **300 itens** não fixados. Os mais antigos são apagados automaticamente.
-- Itens marcados como **senha ou conteúdo temporário** por gerenciadores de senha (por exemplo, 1Password e Bitwarden) **não são guardados**.
-- Você pode apagar um item (<kbd>⌘⌫</kbd>), limpar tudo pelo botão **Limpar tudo**, ou apagar a pasta acima para remover todos os dados.
+- The history keeps up to **300 unpinned items** by default (50 to 1000, configurable in Settings). Older items are deleted automatically.
+- Items marked as **passwords or transient content** by password managers (such as 1Password and Bitwarden) are **never stored**.
+- You can delete an item (<kbd>⌘⌫</kbd>), clear everything with **Clear all** or in Settings, or delete the folder above to remove all data.
 
-> ⚠️ Atenção: o Ipasty guarda **tudo** o que você copia, inclusive textos sensíveis copiados de lugares comuns (como um token colado num e-mail). Se copiar algo sigiloso, apague o item do histórico.
+> ⚠️ Ipasty stores **everything** you copy, including sensitive text copied from ordinary places (like a token pasted in an email). If you copy something secret, delete it from the history.
 
-## O que sai do seu Mac
+## What leaves your Mac
 
-- **Nada**, exceto quando você usa a **aba GIF**. Nela, o app envia ao GIPHY o texto que você pesquisa, a sua chave da API e o idioma, e baixa as imagens dos GIFs. Isso segue a [política de privacidade do GIPHY](https://giphy.com/privacy).
-- O Ipasty **não tem** telemetria, estatísticas de uso, anúncios, contas nem servidores próprios.
+- **Nothing**, except when you use the **GIF tab**. There, the app sends GIPHY your search text, your API key and the language, and downloads the GIF images. This follows the [GIPHY privacy policy](https://giphy.com/privacy).
+- Ipasty has **no** telemetry, usage analytics, ads, accounts or servers of its own.
 
-## Permissões que o app pede
+## Permissions the app asks for
 
-| Permissão | Para quê | Obrigatória? |
+| Permission | What for | Required? |
 |---|---|---|
-| **Acessibilidade** | Enviar <kbd>⌘V</kbd> ao app em que você estava, para colar com um clique | Não. Sem ela, você cola manualmente |
-| **Abrir ao iniciar** | Iniciar junto com o Mac, se você ligar a opção | Não |
+| **Accessibility** | Send <kbd>⌘V</kbd> to the app you were using, so a click pastes | No. Without it you paste manually |
+| **Open at login** | Start with your Mac (on by default, can be turned off in Settings) | No |
 
-O Ipasty **não** pede acesso a arquivos, câmera, microfone, localização ou contatos.
+Ipasty does **not** ask for access to files, camera, microphone, location or contacts.
 
-## Termos de uso
+## Terms of use
 
-1. O Ipasty é software livre, distribuído sob a [Licença MIT](LICENSE).
-2. Ele é fornecido **"como está"**, sem garantias de qualquer tipo. Os autores não se responsabilizam por perdas de dados ou outros danos decorrentes do uso.
-3. Ao usar a aba GIF, você é responsável pela sua chave do GIPHY e concorda com os termos do GIPHY. Veja [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-4. Use o app de acordo com as leis aplicáveis e respeitando os direitos autorais do conteúdo que você copia e compartilha.
+1. Ipasty is free software, distributed under the [MIT License](LICENSE).
+2. It is provided **"as is"**, without warranty of any kind. The authors are not liable for data loss or other damages arising from its use.
+3. When using the GIF tab, you are responsible for your GIPHY key and agree to GIPHY's terms. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+4. Use the app in accordance with applicable laws and respect the copyright of the content you copy and share.
 
-Dúvidas? Abra uma [issue](https://github.com/augusttogu/ipasty/issues). Para problemas de segurança, veja [SECURITY.md](SECURITY.md).
+Questions? Open an [issue](https://github.com/augusttogu/ipasty/issues). For security problems, see [SECURITY.md](SECURITY.md).

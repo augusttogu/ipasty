@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 💬 Dúvidas e ideias soltas
+  - name: 💬 Questions and loose ideas
     url: https://github.com/augusttogu/ipasty/discussions
-    about: Para perguntas e conversas que ainda não são um problema ou uma proposta.
-  - name: 🔒 Relatar uma falha de segurança
+    about: For questions and conversations that aren't a bug or a proposal yet.
+  - name: 🔒 Report a security issue
     url: https://github.com/augusttogu/ipasty/security/advisories/new
-    about: Não abra issue pública para problemas de segurança.
+    about: Please don't open public issues for security problems.

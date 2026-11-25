@@ -1,6 +1,6 @@
 # Guia de instalação do Ipasty
 
-← [Voltar ao README](../README.md)
+← [Voltar ao README](../README.pt-BR.md) · [English](INSTALL.md)
 
 ## Requisitos
 
@@ -80,7 +80,7 @@ git pull
 
 ### Permitir colar com um clique (Acessibilidade)
 
-Na primeira vez, o Ipasty pede a permissão de **Acessibilidade**:
+Na primeira vez, o Ipasty pede a permissão de **Acessibilidade** (só uma vez; ela continua valendo nas atualizações):
 
 1. **Ajustes do Sistema → Privacidade e Segurança → Acessibilidade**.
 2. Ative o **Ipasty** (se não estiver na lista, clique em **+** e escolha o app em Aplicativos).
@@ -98,7 +98,7 @@ A chave gratuita permite até 100 buscas por hora.
 
 ### Abrir junto com o Mac (opcional)
 
-Clique no ícone do Ipasty na barra de menus e ligue **Abrir ao iniciar o Mac**.
+Já vem ligado. Para desligar: ícone do Ipasty na barra de menus → **Ajustes…** → **Abrir ao iniciar o Mac**.
 
 ---
 
@@ -107,7 +107,7 @@ Clique no ícone do Ipasty na barra de menus e ligue **Abrir ao iniciar o Mac**.
 | Problema | O que fazer |
 |---|---|
 | O <kbd>⇧⌘V</kbd> não abre nada | Veja se o ícone de prancheta está na barra de menus. Se não estiver, abra o Ipasty de novo pela pasta Aplicativos. |
-| Clicar num item não cola | Confira a permissão de Acessibilidade. Depois de atualizar o app, pode ser preciso remover o Ipasty da lista e adicionar de novo. |
+| Clicar num item não cola | Abra **Ajustes → Permissões**. Se o Ipasty aparece ligado na lista do sistema e mesmo assim não cola, clique em **Redefinir permissão**. |
 | "Chave do GIPHY inválida" | Na aba GIF, clique na engrenagem → **Trocar chave do GIPHY** e cole a chave de novo. |
 | "Limite do GIPHY atingido" | A chave gratuita permite 100 buscas por hora. Espere um pouco. |
 | Algum emoji não aparece | O Ipasty mostra só os emojis que a sua versão do macOS sabe desenhar. Atualize o macOS para ver os mais novos. |

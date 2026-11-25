@@ -1,54 +1,54 @@
-name: 🐛 Relatar um problema
-description: Algo não funciona como deveria.
+name: 🐛 Bug report
+description: Something doesn't work as it should.
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Obrigado por ajudar a melhorar o Ipasty! ⚠️ **Não cole conteúdo do seu histórico, chaves de API ou dados pessoais aqui.**
+        Thanks for helping improve Ipasty! ⚠️ **Don't paste your clipboard history, API keys or personal data here.**
   - type: textarea
     id: what
     attributes:
-      label: O que aconteceu?
-      description: Descreva o problema e o que você esperava que acontecesse.
+      label: What happened?
+      description: Describe the problem and what you expected to happen.
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: Como reproduzir
+      label: Steps to reproduce
       placeholder: |
-        1. Abra o Ipasty com ⇧⌘V
-        2. Vá na aba…
-        3. Clique em…
+        1. Open Ipasty with ⇧⌘V
+        2. Go to the … tab
+        3. Click …
     validations:
       required: true
   - type: input
     id: version
     attributes:
-      label: Versão do Ipasty
-      description: Clique com o botão direito no app, em Aplicativos → Obter Informações.
-      placeholder: "1.0.0"
+      label: Ipasty version
+      description: Shown at the bottom of Ipasty Settings (menu bar icon → Settings…).
+      placeholder: "1.1.0"
     validations:
       required: true
   - type: input
     id: macos
     attributes:
-      label: Versão do macOS e tipo de Mac
+      label: macOS version and Mac model
       placeholder: "macOS 15.2, MacBook Air M2"
     validations:
       required: true
   - type: dropdown
     id: install
     attributes:
-      label: Como você instalou?
+      label: How did you install it?
       options:
-        - Baixei da página de Releases
-        - Compilei com ./build.sh
+        - Downloaded from the Releases page
+        - Built with ./build.sh
     validations:
       required: true
   - type: textarea
     id: extra
     attributes:
-      label: Prints ou informações extras
-      description: Arraste imagens para cá, se ajudar.
+      label: Screenshots or extra information
+      description: Drag images here if it helps.

@@ -68,8 +68,26 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
-# Assinatura ad-hoc (sem conta de desenvolvedor Apple)
-codesign --force --deep --sign - "$APP"
+# Assinatura.
+# O macOS guarda a permissão de Acessibilidade amarrada ao "requisito de assinatura" do app.
+# Com assinatura ad-hoc pura esse requisito é o hash do binário, que muda a cada compilação:
+# por isso o sistema pedia a permissão de novo depois de cada atualização.
+# Aqui o requisito passa a ser o identificador do app, que não muda entre versões.
+# Se houver um certificado de desenvolvedor no Keychain (ou SIGN_IDENTITY definido), ele é usado.
+BUNDLE_ID=io.github.augusttogu.ipasty
+IDENTITY="${SIGN_IDENTITY:-}"
+if [[ -z "$IDENTITY" ]]; then
+  IDENTITY="$(security find-identity -v -p codesigning 2>/dev/null \
+    | grep -E '"(Developer ID Application|Apple Development)' | head -1 | sed -E 's/.*"(.*)"/\1/')"
+fi
+if [[ -n "$IDENTITY" ]]; then
+  echo "→ Assinando com: $IDENTITY"
+  codesign --force --deep --options runtime --sign "$IDENTITY" --identifier "$BUNDLE_ID" "$APP"
+else
+  echo "→ Assinatura ad-hoc com requisito estável"
+  codesign --force --deep --sign - --identifier "$BUNDLE_ID" \
+    -r="designated => identifier \"$BUNDLE_ID\"" "$APP"
+fi
 
 if [[ $ZIP == 1 ]]; then
   mkdir -p dist
@@ -80,8 +98,9 @@ fi
 if [[ $INSTALL == 1 ]]; then
   mkdir -p ~/Applications
   pkill -x Ipasty 2>/dev/null || true
-  rm -rf ~/Applications/Ipasty.app
-  cp -R "$APP" ~/Applications/
+  # Substitui o conteúdo sem apagar a pasta, para o macOS continuar reconhecendo o mesmo app
+  mkdir -p ~/Applications/Ipasty.app
+  rsync -a --delete "$APP/" ~/Applications/Ipasty.app/
   open ~/Applications/Ipasty.app
   echo "✓ Instalado em ~/Applications/Ipasty.app"
 else

@@ -1,27 +1,27 @@
-name: 💡 Sugerir uma melhoria
-description: Uma ideia para deixar o Ipasty melhor.
-labels: ["melhoria"]
+name: 💡 Feature request
+description: An idea to make Ipasty better.
+labels: ["enhancement"]
 body:
   - type: textarea
     id: problem
     attributes:
-      label: Qual problema isso resolve?
-      placeholder: "Eu sempre preciso… e hoje é difícil porque…"
+      label: What problem does this solve?
+      placeholder: "I often need to… and today it's hard because…"
     validations:
       required: true
   - type: textarea
     id: idea
     attributes:
-      label: Como você imagina que funcionaria?
+      label: How would it work?
     validations:
       required: true
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternativas que você considerou
+      label: Alternatives you considered
   - type: checkboxes
     id: help
     attributes:
-      label: Contribuição
+      label: Contributing
       options:
-        - label: Eu gostaria de ajudar a implementar isso
+        - label: I'd like to help implement this

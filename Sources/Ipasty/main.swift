@@ -1,6 +1,6 @@
 // Ipasty — área de transferência, emojis, GIFs e caracteres especiais na barra de menus do macOS.
 // Atalho padrão: ⇧⌘V abre o histórico. ↑/↓ navega, Enter cola, ⌘1–9 escolhe rápido,
-// ⌘P fixa/desafixa, ⌘⌫ apaga o item, Esc fecha.
+// ⌘P fixa/desafixa, ⌘F favorita, ⌘, abre os Ajustes, ⌘⌫ apaga o item, Esc fecha.
 
 import AppKit
 import SwiftUI
@@ -28,9 +28,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     var hotKeyRef: EventHotKeyRef?
     var keyMonitor: Any?
 
+    let settings = AppSettings.shared
+    var hotKeyHandlerInstalled = false
+
     var autoPaste: Bool {
-        get { UserDefaults.standard.object(forKey: "autoPaste") as? Bool ?? true }
-        set { UserDefaults.standard.set(newValue, forKey: "autoPaste") }
+        get { settings.autoPaste }
+        set { settings.autoPaste = newValue }
     }
 
     func applicationDidFinishLaunching(_ note: Notification) {
@@ -45,6 +48,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
             let path = CommandLine.arguments[i + 1]
             if let a = CommandLine.arguments.firstIndex(of: "--appearance"), a + 1 < CommandLine.arguments.count {
                 NSApp.appearance = NSAppearance(named: CommandLine.arguments[a + 1] == "light" ? .aqua : .darkAqua)
+            }
+            if CommandLine.arguments.contains("--settings") {
+                SettingsWindowController.shared.show(clips: store)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    if let v = NSApp.keyWindow?.contentView ?? NSApp.windows.first(where: { $0.title.contains("Ajustes") })?.contentView,
+                       let rep = v.bitmapImageRepForCachingDisplay(in: v.bounds) {
+                        v.cacheDisplay(in: v.bounds, to: rep)
+                        try? rep.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: path))
+                    }
+                    NSApp.terminate(nil)
+                }
+                return
             }
             showPanel()
             if let t = CommandLine.arguments.firstIndex(of: "--tab"), t + 1 < CommandLine.arguments.count,
@@ -69,7 +84,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
             }
             return
         }
-        if autoPaste && !AXIsProcessTrusted() { requestAccessibility() }
+        settings.configureLoginOnFirstRun()
+        settings.requestAccessibilityIfFirstTime()
+    }
+
+    /// Abrir o app de novo (Finder, Spotlight, Launchpad) mostra os Ajustes.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        showSettings()
+        return false
     }
 
     // Barra de menus
@@ -83,21 +105,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
 
     func menuNeedsUpdate(_ menu: NSMenu) {
         menu.removeAllItems()
+        settings.refresh()
         menu.addItem(withTitle: "Abrir área de transferência", action: #selector(showPanelFromMenu), keyEquivalent: "v")
-            .keyEquivalentModifierMask = [.command, .shift]
-        menu.addItem(withTitle: "Emojis", action: #selector(showEmoji), keyEquivalent: "")
-        menu.addItem(withTitle: "GIFs", action: #selector(showGif), keyEquivalent: "")
-        menu.addItem(withTitle: "Caracteres especiais", action: #selector(showSymbols), keyEquivalent: "")
-        menu.addItem(withTitle: "Favoritos", action: #selector(showFavorites), keyEquivalent: "")
+            .keyEquivalentModifierMask = settings.hotKey.menuModifiers
+        if settings.isTabEnabled(.emoji) { menu.addItem(withTitle: "Emojis", action: #selector(showEmoji), keyEquivalent: "") }
+        if settings.isTabEnabled(.gif) { menu.addItem(withTitle: "GIFs", action: #selector(showGif), keyEquivalent: "") }
+        if settings.isTabEnabled(.symbols) { menu.addItem(withTitle: "Caracteres especiais", action: #selector(showSymbols), keyEquivalent: "") }
+        if settings.isTabEnabled(.favorites) { menu.addItem(withTitle: "Favoritos", action: #selector(showFavorites), keyEquivalent: "") }
         menu.addItem(.separator())
 
         let ap = menu.addItem(withTitle: "Colar automaticamente", action: #selector(toggleAutoPaste), keyEquivalent: "")
         ap.state = autoPaste ? .on : .off
-        if autoPaste && !AXIsProcessTrusted() {
+        if autoPaste && !settings.accessibilityGranted {
             menu.addItem(withTitle: "⚠︎ Permitir Acessibilidade…", action: #selector(requestAccessibility), keyEquivalent: "")
         }
         let login = menu.addItem(withTitle: "Abrir ao iniciar o Mac", action: #selector(toggleLogin), keyEquivalent: "")
-        login.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        login.state = settings.launchAtLogin ? .on : .off
+        menu.addItem(withTitle: "Ajustes…", action: #selector(showSettings), keyEquivalent: ",")
 
         menu.addItem(.separator())
         menu.addItem(withTitle: "Limpar histórico (mantém fixados)", action: #selector(clearHistory), keyEquivalent: "")
@@ -117,19 +141,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         if autoPaste && !AXIsProcessTrusted() { requestAccessibility() }
     }
 
-    @objc func requestAccessibility() {
-        let opts = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-        _ = AXIsProcessTrustedWithOptions(opts)
+    @objc func requestAccessibility() { settings.requestAccessibility() }
+
+    @objc func showSettings() {
+        hidePanel()
+        SettingsWindowController.shared.show(clips: store)
     }
 
     @objc func toggleLogin() {
-        do {
-            if SMAppService.mainApp.status == .enabled { try SMAppService.mainApp.unregister() }
-            else { try SMAppService.mainApp.register() }
-        } catch {
+        settings.setLaunchAtLogin(!settings.launchAtLogin)
+        if let err = settings.loginError {
             let a = NSAlert()
             a.messageText = "Não foi possível alterar a abertura automática"
-            a.informativeText = error.localizedDescription
+            a.informativeText = err
             a.runModal()
         }
     }
@@ -169,10 +193,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         let flags = e.modifierFlags.intersection(.deviceIndependentFlagsMask)
 
         if Int(e.keyCode) == kVK_Escape { hidePanel(); return true }
+        if cmd && e.charactersIgnoringModifiers == "," { showSettings(); return true }
 
         // ⌃Tab / ⌃⇧Tab troca de aba
         if Int(e.keyCode) == kVK_Tab && flags.contains(.control) {
-            let all = Tab.allCases
+            let all = settings.visibleTabs
             let i = all.firstIndex(of: picker.tab) ?? 0
             let next = flags.contains(.shift) ? (i - 1 + all.count) % all.count : (i + 1) % all.count
             picker.tab = all[next]
@@ -209,6 +234,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         case kVK_ANSI_P where cmd:
             if store.selected < list.count { store.togglePin(list[store.selected].id) }
             return true
+        case kVK_ANSI_F where cmd:
+            if store.selected < list.count, list[store.selected].kind == .text {
+                picker.toggleFavorite(FavItem(kind: .text, value: list[store.selected].text ?? ""))
+            }
+            return true
         default: break
         }
         if cmd, let c = e.charactersIgnoringModifiers, let n = Int(c), (1...9).contains(n) {
@@ -223,8 +253,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
     func showPanel(tab: Tab = .clipboard) {
         store.query = ""
         store.selected = 0
-        picker.tab = tab
-        if tab == .gif { gifs.loadIfNeeded() }
+        picker.tab = settings.isTabEnabled(tab) ? tab : .clipboard
+        if picker.tab == .gif { gifs.loadIfNeeded() }
         // Posiciona perto do cursor, sem sair da tela
         let mouse = NSEvent.mouseLocation
         let screen = NSScreen.screens.first { NSMouseInRect(mouse, $0.frame, false) } ?? NSScreen.main!
@@ -317,15 +347,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, NSMe
         up?.post(tap: .cghidEventTap)
     }
 
-    // Atalho global ⇧⌘V (Carbon — não precisa de permissão)
+    // Atalho global (padrão ⇧⌘V; Carbon — não precisa de permissão). Chamado de novo quando muda nos Ajustes.
     func registerHotKey() {
-        var spec = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-        InstallEventHandler(GetApplicationEventTarget(), { _, _, _ in
-            DispatchQueue.main.async { AppDelegate.shared.togglePanel() }
-            return noErr
-        }, 1, &spec, nil, nil)
+        if !hotKeyHandlerInstalled {
+            var spec = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
+            InstallEventHandler(GetApplicationEventTarget(), { _, _, _ in
+                DispatchQueue.main.async { AppDelegate.shared.togglePanel() }
+                return noErr
+            }, 1, &spec, nil, nil)
+            hotKeyHandlerInstalled = true
+        }
+        if let ref = hotKeyRef { UnregisterEventHotKey(ref); hotKeyRef = nil }
         let id = EventHotKeyID(signature: OSType(0x43505944), id: 1) // 'CPYD'
-        RegisterEventHotKey(UInt32(kVK_ANSI_V), UInt32(cmdKey | shiftKey), id,
+        RegisterEventHotKey(UInt32(kVK_ANSI_V), settings.hotKey.carbonModifiers, id,
                             GetApplicationEventTarget(), 0, &hotKeyRef)
     }
 }

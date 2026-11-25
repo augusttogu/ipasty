@@ -7,6 +7,7 @@ struct RootView: View {
     @ObservedObject var picker: PickerStore
     @ObservedObject var clips: Store
     @ObservedObject var gifs: GifStore
+    @ObservedObject var settings = AppSettings.shared
     var app: AppDelegate
 
     var body: some View {
@@ -14,6 +15,11 @@ struct RootView: View {
             HStack(spacing: 6) {
                 Text("Ipasty").font(.system(size: 12)).foregroundStyle(.secondary)
                 Spacer()
+                Button(action: { app.showSettings() }) {
+                    Image(systemName: "gearshape").font(.system(size: 12))
+                        .frame(width: 24, height: 24).contentShape(Rectangle())
+                }
+                .buttonStyle(.plain).foregroundStyle(.secondary).help("Ajustes (⌘,)")
                 Button(action: { app.hidePanel() }) {
                     Image(systemName: "xmark").font(.system(size: 12))
                         .frame(width: 24, height: 24).contentShape(Rectangle())
@@ -23,7 +29,7 @@ struct RootView: View {
             .padding(.horizontal, 14).padding(.top, 10)
 
             HStack(spacing: 4) {
-                ForEach(Tab.allCases, id: \.self) { t in
+                ForEach(settings.visibleTabs, id: \.self) { t in
                     TabButton(tab: t, selected: picker.tab == t) {
                         picker.tab = t
                         picker.focusTick += 1
